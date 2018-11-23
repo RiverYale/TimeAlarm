@@ -15,9 +15,6 @@ import android.os.Vibrator;
 
 import java.util.List;
 
-/*
-* test
-* */
 public class MonitorService extends Service {
 
     private SharedPreferences data;
