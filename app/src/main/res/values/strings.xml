@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">时间提醒</string>
+    <string name="openAlarm">开启提醒</string>
+    <string name="add">添加</string>
+    <string name="settings">设置</string>
+    <string name="lastTime">玩耍时间</string>
+    <string name="stopTime">学习时间</string>
+    <string name="type">提醒方式</string>
+    <string name="ring">铃声</string>
+    <string name="curLastTime">已玩耍时间</string>
+    <string name="curStopTime">已学习时间</string>
+    <string name="hint">请输入时间(分钟)</string>
+    <string name="statistics">使用统计</string>
+
+</resources>
