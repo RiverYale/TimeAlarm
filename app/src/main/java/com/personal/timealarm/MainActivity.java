@@ -24,7 +24,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
+/**
+ * main
+ */
 public class MainActivity extends AppCompatActivity {
 
     private Switch view_onAlarm;
