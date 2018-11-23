@@ -2,6 +2,7 @@ package com.personal.timealarm;
 
 import android.app.AlertDialog;
 import android.app.AppOpsManager;
+import android.app.Service;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,9 +10,11 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Vibrator;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CompoundButton;
@@ -28,12 +31,24 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
 
     private Switch view_onAlarm;
+    private Switch view_onSleepAlarm;
     private ListView view_program;
 
     private ProgramListAdapter adapter;
     private List<Map<String, Object>> onListAppInfo;
     private SharedPreferences data;
     private SharedPreferences.Editor editor;
+
+    private void stopMyService(Intent service)
+    {
+        boolean isOnAlarm = data.getBoolean("isOnAlarm",false);
+        boolean isOnSleepAlarm = data.getBoolean("isOnSleepAlarm",false);
+        if(!isOnAlarm && !isOnSleepAlarm)
+        {
+            //如果两个提醒都关闭才关闭这个线程
+            stopService(service);
+        }
+    }
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,23 +65,61 @@ public class MainActivity extends AppCompatActivity {
         view_program.setAdapter(adapter);
 
         boolean temp = data.getBoolean("isOnAlarm", false);
+
+        final Intent service = new Intent(MainActivity.this, MonitorService.class);
+
         view_onAlarm.setChecked(temp);
         if(temp){
-            Intent service = new Intent(MainActivity.this, MonitorService.class);
             startService(service);
         }
 
         view_onAlarm.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                Intent service = new Intent(MainActivity.this, MonitorService.class);
                 if(b){
                     editor.putBoolean("isOnAlarm", true);
+                    editor.apply();
                     startService(service);
                 }else{
                     editor.putBoolean("isOnAlarm", false);
-                    stopService(service);
+                    editor.apply();
+                    stopMyService(service);
                 }
-                editor.apply();
+            }
+        });
+
+
+        /*
+        接下来的几行是睡觉检测的初始化和listener
+        * */
+        view_onSleepAlarm = findViewById(R.id.widget_onSleepAlarm);
+        Boolean isOnSleepAlarm  = data.getBoolean("isOnSleepAlarm",false);
+        view_onSleepAlarm.setChecked(isOnSleepAlarm);
+        if(isOnSleepAlarm)
+        {
+            startService(service);
+        }
+        view_onSleepAlarm.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(b)
+                {
+                    String sleeptime = data.getString("sleepTime",null);
+                    if(sleeptime==null)
+                    {
+                        Toast.makeText(MainActivity.this, "还没有设置过睡觉时间，默认为23:00", Toast.LENGTH_SHORT).show();
+                    }
+                    editor.putBoolean("isOnSleepAlarm",true);
+                    editor.apply();
+                    startService(service);
+                    Log.i("start","开启睡觉提醒");
+                }
+                else
+                {
+                    editor.putBoolean("isOnSleepAlarm",false);
+                    editor.apply();
+                    stopMyService(service);
+                    Log.i("stop","关闭睡觉提醒");
+                }
             }
         });
 
@@ -90,6 +143,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
 
     protected void onResume() {
         super.onResume();
