@@ -158,7 +158,4 @@ public class MonitorService extends Service {
             }
         }
     }
-
-
-
 }

@@ -2,7 +2,6 @@ package com.personal.timealarm;
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.TimePickerDialog;
 import android.content.ComponentName;
@@ -11,12 +10,16 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.TextPaint;
+import android.text.style.ForegroundColorSpan;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -127,10 +130,16 @@ public class MySettings extends AppCompatActivity{
                     if ("".equals(res) || res.charAt(0)=='0') {
                         Toast.makeText(MySettings.this, "请输入正确的数字！", Toast.LENGTH_SHORT).show();
                     }else{
-                        if(TYPE == 1) editor.putInt("lastTime",Integer.parseInt(res));
-                        else editor.putInt("stopTime",Integer.parseInt(res));
+                        if(TYPE == 1){
+                            editor.putInt("lastTime",Integer.parseInt(res));
+                            TextView tv = findViewById(R.id.widget_lastTime);
+                            tv.setText(getContentItemString(tv, "玩耍时间", res+" min"));
+                        }else{
+                            editor.putInt("stopTime",Integer.parseInt(res));
+                            TextView tv = findViewById(R.id.widget_stopTime);
+                            tv.setText(getContentItemString(tv, "学习时间", res+" min"));
+                        }
                         editor.apply();
-                        updateContent();
                     }
                     dialogInterface.dismiss();
                 }
@@ -146,7 +155,8 @@ public class MySettings extends AppCompatActivity{
                 public void onClick(DialogInterface dialogInterface, int i){
                     editor.putInt("type", i);
                     editor.apply();
-                    updateContent();
+                    TextView tv = findViewById(R.id.widget_type);
+                    tv.setText(getContentItemString(tv, "提醒方式", arrayOfString[i]));
                     dialogInterface.dismiss();
                 }
             }).setCancelable(true).create().show();
@@ -165,30 +175,65 @@ public class MySettings extends AppCompatActivity{
         new TimePickerDialog(this, AlertDialog.THEME_HOLO_LIGHT,new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int i, int i1) {
-                if(i1>=10)
-                editor.putString("sleepTime",i+":"+i1);
-                else
-                editor.putString("sleepTime",i+":0"+i1);
-                Log.i("setTime","设置时间为: "+i+":"+i1);
+                TextView tv = findViewById(R.id.widget_sleepTime);
+                if(i1>=10){
+                    editor.putString("sleepTime",i+":"+i1);
+                    tv.setText(getContentItemString(tv, "睡觉时间", i+":"+i1));
+                }else{
+                    editor.putString("sleepTime",i+":0"+i1);
+                    tv.setText(getContentItemString(tv, "睡觉时间", i+":0"+i1));
+                }
+//                Log.i("setTime","设置时间为: "+i+":"+i1);
                 editor.apply();
-                updateContent();
             }
         },hour,minute,true).show();
     }
-
 
     @SuppressLint("SetTextI18n")
     public void updateContent() {
         String type;
         if (data.getInt("type", 0) == 0) type = "震动";
         else type = "响铃";
-        view_content.setText(getString(R.string.lastTime)+"："+data.getInt("lastTime",30)
-                +" min\n"+getString(R.string.stopTime)+"："+data.getInt("stopTime",5)
-                +"min\n"+getString(R.string.sleepTime)+":  "+data.getString("sleepTime","23:00")
-                +" \n"+getString(R.string.type)+"："+type
-                +"\n"+getString(R.string.ring)+"："+data.getString("ring","Null")
-                +"\n\n"+getString(R.string.curLastTime)+": "+String.format("%.2f", curLastTime/60000.0)+" min"
+        String keys[] = {getString(R.string.lastTime),
+                         getString(R.string.stopTime),
+                         getString(R.string.sleepTime),
+                         getString(R.string.type),
+                         getString(R.string.ring)};
+
+        String values[] = { data.getInt("lastTime",30)+" min",
+                            data.getInt("stopTime",5)+" min",
+                            data.getString("sleepTime","23:00"),
+                            type,
+                            data.getString("ring","Null")};
+
+        TextView tvs[] = {findViewById(R.id.widget_lastTime),
+                         findViewById(R.id.widget_stopTime),
+                         findViewById(R.id.widget_sleepTime),
+                         findViewById(R.id.widget_type),
+                         findViewById(R.id.widget_ring)};
+
+        for(int i=0;i<tvs.length;i++){
+            tvs[i].setText(getContentItemString(tvs[i], keys[i], values[i]));
+        }
+
+        view_content.setText(getString(R.string.curLastTime)+": "+String.format("%.2f", curLastTime/60000.0)+" min"
                 +"\n"+getString(R.string.curStopTime)+": "+String.format("%.2f", curStopTime/60000.0)+" min");
+    }
+
+    public SpannableStringBuilder getContentItemString(TextView tv, String key, String value){
+        TextPaint paint = tv.getPaint();
+        int width = tv.getMeasuredWidth() - tv.getPaddingLeft() - tv.getPaddingRight();
+        float width1 = paint.measureText(key);
+        float width2 = paint.measureText(value);
+        float spaceWidth = paint.measureText(" ");
+        int spaceCount = (int)((width - width1 - width2) / spaceWidth);
+        SpannableStringBuilder sb = new SpannableStringBuilder();
+        sb.append(key);
+        for (int i = 0; i < spaceCount; i++) sb.append(" ");
+        sb.append(value);
+        ForegroundColorSpan colorSpan = new ForegroundColorSpan(Color.rgb(91, 88, 88));
+        sb.setSpan(colorSpan, key.length()+spaceCount,sb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return sb;
     }
 
     protected void onDestroy() {
