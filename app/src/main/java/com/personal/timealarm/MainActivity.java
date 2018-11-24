@@ -41,16 +41,6 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences data;
     private SharedPreferences.Editor editor;
 
-    private void stopMyService(Intent service)
-    {
-        boolean isOnAlarm = data.getBoolean("isOnAlarm",false);
-        boolean isOnSleepAlarm = data.getBoolean("isOnSleepAlarm",false);
-        if(!isOnAlarm && !isOnSleepAlarm)
-        {
-            //如果两个提醒都关闭才关闭这个线程
-            stopService(service);
-        }
-    }
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,12 +56,19 @@ public class MainActivity extends AppCompatActivity {
         adapter = new ProgramListAdapter(this, onListAppInfo);
         view_program.setAdapter(adapter);
 
-        boolean temp = data.getBoolean("isOnAlarm", false);
+
 
         final Intent service = new Intent(MainActivity.this, MonitorService.class);
+        final Intent sleepMonitorService = new Intent(MainActivity.this, SleepMonitorService.class);
 
-        view_onAlarm.setChecked(temp);
-        if(temp){
+        boolean temp_isOnAlarm = data.getBoolean("isOnAlarm", false);
+        view_onAlarm.setChecked(temp_isOnAlarm);
+        if(temp_isOnAlarm){
+            startService(service);
+        }
+        boolean temp_isOnSleepAlarm = data.getBoolean("isOnSleepAlarm", false);
+        view_onAlarm.setChecked(temp_isOnSleepAlarm);
+        if(temp_isOnSleepAlarm){
             startService(service);
         }
 
@@ -79,13 +76,12 @@ public class MainActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(b){
                     editor.putBoolean("isOnAlarm", true);
-                    editor.apply();
                     startService(service);
                 }else{
                     editor.putBoolean("isOnAlarm", false);
-                    editor.apply();
-                    stopMyService(service);
+                    stopService(service);
                 }
+                editor.apply();
             }
         });
 
@@ -98,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
         view_onSleepAlarm.setChecked(isOnSleepAlarm);
         if(isOnSleepAlarm)
         {
-            startService(service);
+            startService(sleepMonitorService);
         }
         view_onSleepAlarm.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -111,17 +107,16 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "还没有设置过睡觉时间，默认为23:00", Toast.LENGTH_SHORT).show();
                     }
                     editor.putBoolean("isOnSleepAlarm",true);
-                    editor.apply();
-                    startService(service);
+                    startService(sleepMonitorService);
                     Log.i("start","开启睡觉提醒");
                 }
                 else
                 {
                     editor.putBoolean("isOnSleepAlarm",false);
-                    editor.apply();
-                    stopMyService(service);
+                    stopService(sleepMonitorService);
                     Log.i("stop","关闭睡觉提醒");
                 }
+                editor.apply();
             }
         });
 

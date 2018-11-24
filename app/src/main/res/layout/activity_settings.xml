@@ -40,6 +40,22 @@
         android:textSize="18sp" />
 
     <TextView
+        android:id="@+id/widget_sleepTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:paddingStart="17dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:onClick="onClick"
+        android:gravity="center_vertical"
+        android:text="@string/sleepTime"
+        android:textColor="#000000"
+        android:textSize="18sp" />
+
+    <TextView
         android:id="@+id/widget_type"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -80,7 +96,6 @@
         android:gravity="center_vertical"
         android:textColor="#5b5858"
         android:textSize="15sp" />
-
 
 
 </LinearLayout>

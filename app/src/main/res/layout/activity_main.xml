@@ -19,6 +19,17 @@
         android:text="@string/openAlarm"
         android:textSize="18sp" />
 
+
+    <Switch
+        android:id="@+id/widget_onSleepAlarm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:paddingBottom="10dp"
+        android:paddingStart="17dp"
+        android:paddingTop="10dp"
+        android:text="@string/openSleepAlarm"
+        android:textSize="18sp" />
     <TextView
         android:id="@+id/widget_add"
         android:layout_width="match_parent"

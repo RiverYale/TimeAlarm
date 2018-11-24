@@ -1,6 +1,7 @@
 package com.personal.timealarm;
 
 import android.app.KeyguardManager;
+import android.app.NotificationManager;
 import android.app.Service;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
@@ -12,9 +13,10 @@ import android.os.Build;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.Vibrator;
-
+import android.support.v4.app.NotificationCompat;
+import android.util.Log;
+import java.util.Calendar;
 import java.util.List;
-
 public class MonitorService extends Service {
 
     private SharedPreferences data;
@@ -35,7 +37,6 @@ public class MonitorService extends Service {
     public void onCreate() {
         super.onCreate();
         isMonitor = true;
-        isOnShaking = false;
         data = getSharedPreferences("data", MODE_PRIVATE);
         items = data.getString("packageNames", " ").split(" ");
         vibrator = (Vibrator)getSystemService(VIBRATOR_SERVICE);
@@ -157,4 +158,7 @@ public class MonitorService extends Service {
             }
         }
     }
+
+
+
 }

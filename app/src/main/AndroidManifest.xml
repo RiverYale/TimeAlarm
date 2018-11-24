@@ -34,6 +34,8 @@
         <service android:name=".MonitorService">
         </service>
 
+        <service android:name=".SleepMonitorService">
+        </service>
     </application>
 
 </manifest>

@@ -2,7 +2,9 @@ package com.personal.timealarm;
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.TimePickerDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,10 +16,12 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 public class MySettings extends AppCompatActivity{
@@ -95,6 +99,9 @@ public class MySettings extends AppCompatActivity{
 
                 }
                 break;
+            case R.id.widget_sleepTime:
+                getSleepTime();
+                break;
         }
     }
 
@@ -146,6 +153,30 @@ public class MySettings extends AppCompatActivity{
         }
     }
 
+    public void getSleepTime()
+    {
+        if (data.getBoolean("isOnSleepAlarm", false)) {
+            Toast.makeText(MySettings.this, "请先关闭提醒", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        String sleepTime = data.getString("sleepTime","23:00");
+        int hour = Integer.valueOf(sleepTime.substring(0,sleepTime.indexOf(':')));
+        int minute = Integer.valueOf(sleepTime.substring(sleepTime.indexOf(':')+1));
+        new TimePickerDialog(this, AlertDialog.THEME_HOLO_LIGHT,new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker timePicker, int i, int i1) {
+                if(i1>=10)
+                editor.putString("sleepTime",i+":"+i1);
+                else
+                editor.putString("sleepTime",i+":0"+i1);
+                Log.i("setTime","设置时间为: "+i+":"+i1);
+                editor.apply();
+                updateContent();
+            }
+        },hour,minute,true).show();
+    }
+
+
     @SuppressLint("SetTextI18n")
     public void updateContent() {
         String type;
@@ -153,7 +184,8 @@ public class MySettings extends AppCompatActivity{
         else type = "响铃";
         view_content.setText(getString(R.string.lastTime)+"："+data.getInt("lastTime",30)
                 +" min\n"+getString(R.string.stopTime)+"："+data.getInt("stopTime",5)
-                +" min\n"+getString(R.string.type)+"："+type
+                +"min\n"+getString(R.string.sleepTime)+":  "+data.getString("sleepTime","23:00")
+                +" \n"+getString(R.string.type)+"："+type
                 +"\n"+getString(R.string.ring)+"："+data.getString("ring","Null")
                 +"\n\n"+getString(R.string.curLastTime)+": "+String.format("%.2f", curLastTime/60000.0)+" min"
                 +"\n"+getString(R.string.curStopTime)+": "+String.format("%.2f", curStopTime/60000.0)+" min");

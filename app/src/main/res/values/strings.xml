@@ -11,5 +11,8 @@
     <string name="curStopTime">已学习时间</string>
     <string name="hint">请输入时间(分钟)</string>
     <string name="statistics">使用统计</string>
+    <string name="openSleepAlarm">开启睡觉提醒</string>
+    <string name="sleepTime">睡觉时间</string>
+
 
 </resources>
