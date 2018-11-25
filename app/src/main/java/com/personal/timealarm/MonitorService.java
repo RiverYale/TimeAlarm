@@ -134,11 +134,11 @@ public class MonitorService extends Service {
                         curStopTime = 0;
                     }else if(curLastTime > 0){
                         curStopTime += current - last;
-                        if (curStopTime >= data.getInt("stopTime", 5) * 60000) {
+                        if (curStopTime >= data.getLong("stopTime", 5L) * 60000) {
                             curLastTime = 0;
                         }
                     }
-                    if(curLastTime >= data.getInt("lastTime",30) * 60000 && flag && isOpen && !isLocked){
+                    if(curLastTime >= data.getLong("lastTime",30L) * 60000 && flag && isOpen && !isLocked){
                         if(!isOnShaking){
                             long[] patter = {0, 3000, 1000};
                             vibrator.vibrate(patter, 0);

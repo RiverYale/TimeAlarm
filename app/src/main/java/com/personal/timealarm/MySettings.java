@@ -19,7 +19,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
+import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -29,9 +31,12 @@ import android.widget.Toast;
 
 public class MySettings extends AppCompatActivity{
 
-    private TextView view_content;
     private SharedPreferences data;
     private SharedPreferences.Editor editor;
+    private SimpleRoundProgress view_lastTimeBar;
+    private SimpleRoundProgress view_stopTimeBar;
+    private TextView view_curLastTimeValue;
+    private TextView view_curStopTimeValue;
     private long curLastTime = 0, curStopTime = 0;
 
     ServiceConnection connection=new ServiceConnection() {
@@ -49,7 +54,7 @@ public class MySettings extends AppCompatActivity{
     @SuppressLint("HandlerLeak")
     Handler myHandler = new Handler(){
         public void handleMessage(Message msg) {
-            updateContent();
+            initContent();
         }
     };
 
@@ -59,7 +64,10 @@ public class MySettings extends AppCompatActivity{
         setContentView(R.layout.activity_settings);
         setTitle("设置");
 
-        view_content = findViewById(R.id.widget_content);
+        view_lastTimeBar = findViewById(R.id.widget_lastTimeBar);
+        view_stopTimeBar = findViewById(R.id.widget_stopTimeBar);
+        view_curLastTimeValue = findViewById(R.id.widget_curLastTimeValue);
+        view_curStopTimeValue = findViewById(R.id.widget_curStopTimeValue);
 
         data = getSharedPreferences("data", MODE_PRIVATE);
         editor = data.edit();
@@ -131,11 +139,11 @@ public class MySettings extends AppCompatActivity{
                         Toast.makeText(MySettings.this, "请输入正确的数字！", Toast.LENGTH_SHORT).show();
                     }else{
                         if(TYPE == 1){
-                            editor.putInt("lastTime",Integer.parseInt(res));
+                            editor.putLong("lastTime",Long.parseLong(res));
                             TextView tv = findViewById(R.id.widget_lastTime);
                             tv.setText(getContentItemString(tv, "玩耍时间", res+" min"));
                         }else{
-                            editor.putInt("stopTime",Integer.parseInt(res));
+                            editor.putLong("stopTime",Long.parseLong(res));
                             TextView tv = findViewById(R.id.widget_stopTime);
                             tv.setText(getContentItemString(tv, "学习时间", res+" min"));
                         }
@@ -149,7 +157,7 @@ public class MySettings extends AppCompatActivity{
                 }
             }).create().show();
         } else if (TYPE == 3) {
-            final String[] arrayOfString = {"震动", "响铃(假装能响铃)"};
+            final String[] arrayOfString = {"震动", "响铃(假装能响铃)", "弹窗"};
             builder.setTitle(getString(R.string.type)).setIcon(R.drawable.clock);
             builder.setSingleChoiceItems(arrayOfString, data.getInt("type",0), new DialogInterface.OnClickListener()    {
                 public void onClick(DialogInterface dialogInterface, int i){
@@ -183,25 +191,38 @@ public class MySettings extends AppCompatActivity{
                     editor.putString("sleepTime",i+":0"+i1);
                     tv.setText(getContentItemString(tv, "睡觉时间", i+":0"+i1));
                 }
-//                Log.i("setTime","设置时间为: "+i+":"+i1);
+                Log.i("setTime","设置时间为: "+i+":"+i1);
                 editor.apply();
             }
         },hour,minute,true).show();
     }
 
+    /**
+     * 初始化配置
+     */
     @SuppressLint("SetTextI18n")
-    public void updateContent() {
-        String type;
-        if (data.getInt("type", 0) == 0) type = "震动";
-        else type = "响铃";
+    public void initContent() {
+        String type = "";
+        int temp = data.getInt("type", 0);
+        switch (temp) {
+            case 0:
+                type = "震动";
+                break;
+            case 1:
+                type = "响铃(假装能响铃)";
+                break;
+            case 2:
+                type = "弹窗";
+                break;
+        }
         String keys[] = {getString(R.string.lastTime),
                          getString(R.string.stopTime),
                          getString(R.string.sleepTime),
                          getString(R.string.type),
                          getString(R.string.ring)};
 
-        String values[] = { data.getInt("lastTime",30)+" min",
-                            data.getInt("stopTime",5)+" min",
+        String values[] = { data.getLong("lastTime", 30L)+" min",
+                            data.getLong("stopTime", 5L)+" min",
                             data.getString("sleepTime","23:00"),
                             type,
                             data.getString("ring","Null")};
@@ -216,23 +237,43 @@ public class MySettings extends AppCompatActivity{
             tvs[i].setText(getContentItemString(tvs[i], keys[i], values[i]));
         }
 
-        view_content.setText(getString(R.string.curLastTime)+": "+String.format("%.2f", curLastTime/60000.0)+" min"
-                +"\n"+getString(R.string.curStopTime)+": "+String.format("%.2f", curStopTime/60000.0)+" min");
+        view_curLastTimeValue.setText(getProValue(curLastTime));
+        view_curStopTimeValue.setText(getProValue(curStopTime));
+        int lastValue = (int) (curLastTime*100/data.getLong("lastTime", 30L)/60000);
+        int stopValue = (int) (curStopTime*100/data.getLong("stopTime", 5L)/60000);
+        view_lastTimeBar.setProgress(lastValue);
+        view_stopTimeBar.setProgress(stopValue);
     }
 
+    /**
+     * 转化为 分：秒
+     */
+    private String getProValue(long pro){
+        long m = pro/1000/60;
+        long s = pro/1000 - m*60;
+        return m+":"+(s>9?"":"0")+s;
+    }
+
+    /**
+     * 获取更新后Item的显示内容，空格多少什么的
+     */
     public SpannableStringBuilder getContentItemString(TextView tv, String key, String value){
         TextPaint paint = tv.getPaint();
         int width = tv.getMeasuredWidth() - tv.getPaddingLeft() - tv.getPaddingRight();
         float width1 = paint.measureText(key);
-        float width2 = paint.measureText(value);
+
+        SpannableStringBuilder v = new SpannableStringBuilder(value);
+        ForegroundColorSpan colorSpan = new ForegroundColorSpan(Color.rgb(91, 88, 88));
+        v.setSpan(colorSpan, 0, v.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        v.setSpan(new AbsoluteSizeSpan(15, true), 0, v.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        float width2 = paint.measureText(value)*15/tv.getTextSize();
         float spaceWidth = paint.measureText(" ");
         int spaceCount = (int)((width - width1 - width2) / spaceWidth);
         SpannableStringBuilder sb = new SpannableStringBuilder();
         sb.append(key);
-        for (int i = 0; i < spaceCount; i++) sb.append(" ");
-        sb.append(value);
-        ForegroundColorSpan colorSpan = new ForegroundColorSpan(Color.rgb(91, 88, 88));
-        sb.setSpan(colorSpan, key.length()+spaceCount,sb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        for (int i = 0; i < spaceCount-2; i++) sb.append(" ");
+        sb.append(v);
         return sb;
     }
 

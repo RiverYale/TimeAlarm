@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:showDividers="middle"
@@ -16,10 +18,10 @@
         android:focusable="true"
         android:gravity="center_vertical"
         android:onClick="onClick"
+        android:paddingTop="10dp"
         android:paddingBottom="10dp"
         android:paddingStart="17dp"
-        android:paddingEnd="17dp"
-        android:paddingTop="10dp"
+        android:paddingEnd="6dp"
         android:text="@string/lastTime"
         android:textColor="#000000"
         android:textSize="18sp" />
@@ -31,7 +33,7 @@
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
         android:paddingStart="17dp"
-        android:paddingEnd="17dp"
+        android:paddingEnd="6dp"
         android:background="?android:attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
@@ -48,7 +50,7 @@
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
         android:paddingStart="17dp"
-        android:paddingEnd="17dp"
+        android:paddingEnd="6dp"
         android:background="?android:attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
@@ -65,7 +67,7 @@
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
         android:paddingStart="17dp"
-        android:paddingEnd="17dp"
+        android:paddingEnd="6dp"
         android:background="?android:attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
@@ -82,7 +84,7 @@
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
         android:paddingStart="17dp"
-        android:paddingEnd="17dp"
+        android:paddingEnd="6dp"
         android:background="?android:attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
@@ -91,17 +93,115 @@
         android:text="@string/ring"
         android:textColor="#000000"
         android:textSize="18sp" />
-    <TextView
-        android:id="@+id/widget_content"
+
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
-        android:paddingStart="17dp"
-        android:paddingEnd="17dp"
-        android:gravity="center_vertical"
-        android:textColor="#5b5858"
-        android:textSize="15sp" />
+        android:layout_height="match_parent">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.3">
+
+            <TextView
+                android:id="@+id/widget_curStopTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/stopTime"
+                android:textColor="#000000"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="@+id/widget_stopTimeBar"
+                app:layout_constraintStart_toStartOf="@+id/widget_stopTimeBar"
+                app:layout_constraintTop_toBottomOf="@+id/widget_stopTimeBar" />
+
+            <com.personal.timealarm.SimpleRoundProgress
+                android:id="@+id/widget_stopTimeBar"
+                android:layout_width="150dip"
+                android:layout_height="150dip"
+                android:layout_gravity="center"
+                android:layout_marginStart="24dp"
+                app:layout_constraintBottom_toBottomOf="@+id/widget_lastTimeBar"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/widget_lastTimeBar"
+                app:layout_constraintTop_toTopOf="@+id/widget_lastTimeBar"
+                app:srp_max="100"
+                app:srp_progress="0"
+                app:srp_progressColor="#15aae9"
+                app:srp_roundColor="#f5f2f2"
+                app:srp_roundWidth="12dip"
+                app:srp_startAngle="-90"
+                app:srp_style="STROKE" />
+
+            <TextView
+                android:id="@+id/widget_curLastTime"
+                android:layout_width="wrap_content"
+                android:layout_height="26dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/lastTime"
+                android:textColor="#000000"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="@+id/widget_lastTimeBar"
+                app:layout_constraintStart_toStartOf="@+id/widget_lastTimeBar"
+                app:layout_constraintTop_toBottomOf="@+id/widget_lastTimeBar" />
+
+            <com.personal.timealarm.SimpleRoundProgress
+                android:id="@+id/widget_lastTimeBar"
+                android:layout_width="150dip"
+                android:layout_height="150dip"
+                android:layout_gravity="center"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srp_max="100"
+                app:srp_progress="0"
+                app:srp_progressColor="#15aae9"
+                app:srp_roundColor="#f5f2f2"
+                app:srp_roundWidth="12dip"
+                app:srp_startAngle="-90"
+                app:srp_style="STROKE" />
+
+            <TextView
+                android:id="@+id/widget_curLastTimeValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:text="0:00"
+                android:textSize="24sp"
+                app:layout_constraintBottom_toBottomOf="@+id/widget_lastTimeBar"
+                app:layout_constraintEnd_toEndOf="@+id/widget_lastTimeBar"
+                app:layout_constraintStart_toStartOf="@+id/widget_lastTimeBar"
+                app:layout_constraintTop_toTopOf="@+id/widget_lastTimeBar" />
+
+            <TextView
+                android:id="@+id/widget_curStopTimeValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:text="0:00"
+                android:textSize="24sp"
+                app:layout_constraintBottom_toBottomOf="@+id/widget_stopTimeBar"
+                app:layout_constraintEnd_toEndOf="@+id/widget_stopTimeBar"
+                app:layout_constraintStart_toStartOf="@+id/widget_stopTimeBar"
+                app:layout_constraintTop_toTopOf="@+id/widget_stopTimeBar" />
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.constraint.ConstraintLayout>
 
 
 </LinearLayout>

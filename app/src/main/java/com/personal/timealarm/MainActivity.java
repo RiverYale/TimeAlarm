@@ -56,19 +56,12 @@ public class MainActivity extends AppCompatActivity {
         adapter = new ProgramListAdapter(this, onListAppInfo);
         view_program.setAdapter(adapter);
 
-
-
         final Intent service = new Intent(MainActivity.this, MonitorService.class);
         final Intent sleepMonitorService = new Intent(MainActivity.this, SleepMonitorService.class);
 
         boolean temp_isOnAlarm = data.getBoolean("isOnAlarm", false);
         view_onAlarm.setChecked(temp_isOnAlarm);
         if(temp_isOnAlarm){
-            startService(service);
-        }
-        boolean temp_isOnSleepAlarm = data.getBoolean("isOnSleepAlarm", false);
-        view_onAlarm.setChecked(temp_isOnSleepAlarm);
-        if(temp_isOnSleepAlarm){
             startService(service);
         }
 

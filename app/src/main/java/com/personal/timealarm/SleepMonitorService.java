@@ -66,14 +66,14 @@ public class SleepMonitorService extends Service {
                     today = cal.get(Calendar.MONTH)+" "+cal.get(Calendar.DAY_OF_MONTH);
 
 
-                    //int n_time = n_hour*60+n_minute;
-                    //int time = hour*60+minute;
-                    //Log.i("onMonitor","监控中，距离响铃还剩"+(time-n_time)+"min");
+                    int n_time = n_hour*60+n_minute;
+                    int time = hour*60+minute;
+                    Log.i("onMonitor","监控中，距离响铃还剩"+(time-n_time)+"min");
                     if(!last_date.equals(today))
                     {
                         //如果今天还没有提醒过
-                        int n_time = n_hour*60+n_minute;
-                        int time = hour*60+minute;
+//                        int n_time = n_hour*60+n_minute;
+//                        int time = hour*60+minute;
                         if(n_time-time>=0&&n_time-time<=10)
                         {
                             //如果时间到了并且在10分钟之内
