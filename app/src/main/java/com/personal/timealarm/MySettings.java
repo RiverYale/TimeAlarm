@@ -21,6 +21,7 @@ import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -265,14 +266,14 @@ public class MySettings extends AppCompatActivity{
         SpannableStringBuilder v = new SpannableStringBuilder(value);
         ForegroundColorSpan colorSpan = new ForegroundColorSpan(Color.rgb(91, 88, 88));
         v.setSpan(colorSpan, 0, v.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        v.setSpan(new AbsoluteSizeSpan(15, true), 0, v.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        v.setSpan(new RelativeSizeSpan(0.75f), 0, v.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        float width2 = paint.measureText(value)*15/tv.getTextSize();
+        float width2 = paint.measureText(value)*0.75f;
         float spaceWidth = paint.measureText(" ");
         int spaceCount = (int)((width - width1 - width2) / spaceWidth);
         SpannableStringBuilder sb = new SpannableStringBuilder();
         sb.append(key);
-        for (int i = 0; i < spaceCount-2; i++) sb.append(" ");
+        for (int i = 0; i < spaceCount; i++) sb.append(" ");
         sb.append(v);
         return sb;
     }

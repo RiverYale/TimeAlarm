@@ -27,9 +27,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * main
- */
 public class MainActivity extends AppCompatActivity {
 
     private Switch view_onAlarm;
@@ -40,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
     private List<Map<String, Object>> onListAppInfo;
     private SharedPreferences data;
     private SharedPreferences.Editor editor;
-
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

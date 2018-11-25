@@ -97,7 +97,9 @@ public class ProgramList extends AppCompatActivity{
                 temp.add(str);
             }
         }
-        temp.add("com.android.browser");
+        if(!isOnList("com.android.browser")){
+            temp.add("com.android.browser");
+        }
         return temp;
     }
 
