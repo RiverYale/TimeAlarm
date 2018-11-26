@@ -132,7 +132,7 @@ public class MonitorService extends Service {
                             curLastTime = 0;
                         }
                     }
-                    if(curLastTime >= /*data.getLong("lastTime",30L) * 60000*/ 5000 && needCount){
+                    if(curLastTime >= data.getLong("lastTime",30L) * 60000 && needCount){
                         if(!isOnAlarm){
                             startAlarm();
                             isOnAlarm = true;
@@ -199,7 +199,7 @@ public class MonitorService extends Service {
                     //TODO
                     break;
                 case 2:
-
+                    //无操作
                     break;
             }
         }
