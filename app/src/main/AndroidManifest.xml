@@ -31,6 +31,8 @@
         <activity android:name=".Statistics"
                   android:parentActivityName=".MainActivity"/>
 
+        <activity android:name=".AlarmActivity"/>
+
         <service android:name=".MonitorService">
         </service>
 

@@ -13,6 +13,7 @@
     <string name="statistics">使用统计</string>
     <string name="openSleepAlarm">开启睡觉提醒</string>
     <string name="sleepTime">睡觉时间</string>
+    <string name="alarmTip">玩耍时间已经到了哦~\n(点击回到桌面)</string>
 
 
 </resources>

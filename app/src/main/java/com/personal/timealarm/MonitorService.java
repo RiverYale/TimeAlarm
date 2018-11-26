@@ -1,7 +1,6 @@
 package com.personal.timealarm;
 
 import android.app.KeyguardManager;
-import android.app.NotificationManager;
 import android.app.Service;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
@@ -13,17 +12,19 @@ import android.os.Build;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.Vibrator;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import java.util.Calendar;
+
 import java.util.List;
+
 public class MonitorService extends Service {
 
     private SharedPreferences data;
-    private boolean isMonitor;
-    private boolean isOnShaking;
+    private boolean isMonitor = false;
+    private boolean isOnAlarm;
     private long curLastTime = 0;
     private long curStopTime = 0;
+    private int type;
+    private boolean isMonitorStart = false;
     private String lastApp = "";
 
     private String[] items;
@@ -36,15 +37,19 @@ public class MonitorService extends Service {
 
     public void onCreate() {
         super.onCreate();
-        isMonitor = true;
         data = getSharedPreferences("data", MODE_PRIVATE);
         items = data.getString("packageNames", " ").split(" ");
+
+        type = data.getInt("type", 0);
         vibrator = (Vibrator)getSystemService(VIBRATOR_SERVICE);
     }
 
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Monitor monitor = new Monitor();
-        monitor.start();
+        if(!isMonitor){
+            isMonitor = true;
+            Monitor monitor = new Monitor();
+            monitor.start();
+        }
         return START_STICKY;
     }
 
@@ -114,22 +119,11 @@ public class MonitorService extends Service {
     class Monitor extends Thread{
         public void run() {
             long last = System.currentTimeMillis();
-            String topApp;
-            boolean flag,isLocked,isOpen = false;
             while (isMonitor) {
                 try {
-                    PowerManager powerManager = (PowerManager)getSystemService(Context.POWER_SERVICE);
-                    if (powerManager != null) {
-                        isOpen = powerManager.isScreenOn();
-                    }
-                    KeyguardManager mKeyguardManager = (KeyguardManager)getSystemService(Context.KEYGUARD_SERVICE);
-                    isLocked = mKeyguardManager.inKeyguardRestrictedInputMode();
-                    topApp = getTopApp(MonitorService.this);
-                    if("".equals(topApp)) topApp = lastApp;
-                    else lastApp = topApp;
-                    flag = isOnList(topApp);
+                    boolean needCount = isNeedCount();
                     long current = System.currentTimeMillis();
-                    if (flag && isOpen && !isLocked){
+                    if (needCount){
                         curLastTime += current - last;
                         curStopTime = 0;
                     }else if(curLastTime > 0){
@@ -138,23 +132,75 @@ public class MonitorService extends Service {
                             curLastTime = 0;
                         }
                     }
-                    if(curLastTime >= data.getLong("lastTime",30L) * 60000 && flag && isOpen && !isLocked){
-                        if(!isOnShaking){
-                            long[] patter = {0, 3000, 1000};
-                            vibrator.vibrate(patter, 0);
-                            isOnShaking = true;
+                    if(curLastTime >= /*data.getLong("lastTime",30L) * 60000*/ 5000 && needCount){
+                        if(!isOnAlarm){
+                            startAlarm();
+                            isOnAlarm = true;
                         }
                     }else{
-                        vibrator.cancel();
-                        isOnShaking = false;
+                        stopAlarm();
+                        isOnAlarm = false;
                     }
                     last = current;
 
                     Thread.sleep(500);
-//                    Log.d("zc", topApp+" "+curLastTime+" "+curStopTime);
+                    Log.d("zc", lastApp+" "+curLastTime+" "+curStopTime+" "+getId());
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+            }
+        }
+
+        /**
+         * 是否需要计玩耍时间
+         */
+        private boolean isNeedCount(){
+            String topApp;
+            boolean flag, isLocked = false, isOpen = false;
+
+            PowerManager powerManager = (PowerManager)getSystemService(Context.POWER_SERVICE);
+            if (powerManager != null) isOpen = powerManager.isScreenOn();
+
+            KeyguardManager mKeyguardManager = (KeyguardManager)getSystemService(Context.KEYGUARD_SERVICE);
+            if (mKeyguardManager != null) isLocked = mKeyguardManager.inKeyguardRestrictedInputMode();
+
+            topApp = getTopApp(MonitorService.this);
+            if("".equals(topApp)) topApp = lastApp;
+            else lastApp = topApp;
+
+            flag = isOnList(topApp);
+
+            return flag && isOpen && !isLocked;
+        }
+
+        private void startAlarm(){
+            switch (type) {
+                case 0:
+                    long[] patter = {0, 3000, 1000};
+                    vibrator.vibrate(patter, 0);
+                    break;
+                case 1:
+                    //TODO
+                    break;
+                case 2:
+                    Intent intent = new Intent(getApplicationContext(), AlarmActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    getApplication().startActivity(intent);
+                    break;
+            }
+        }
+
+        private void stopAlarm() {
+            switch (type) {
+                case 0:
+                    vibrator.cancel();
+                    break;
+                case 1:
+                    //TODO
+                    break;
+                case 2:
+
+                    break;
             }
         }
     }
