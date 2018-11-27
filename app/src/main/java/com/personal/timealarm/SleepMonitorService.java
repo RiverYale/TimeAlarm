@@ -3,6 +3,7 @@ package com.personal.timealarm;
 import android.app.KeyguardManager;
 import android.app.NotificationManager;
 import android.app.Service;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -65,6 +66,13 @@ public class SleepMonitorService extends Service {
                     n_minute = cal.get(Calendar.MINUTE);
                     today = cal.get(Calendar.MONTH)+" "+cal.get(Calendar.DAY_OF_MONTH);
 
+                    //判断是12小时制还是24小时制
+                    ContentResolver cv = getContentResolver();
+                    String strTimeFormat = android.provider.Settings.System.getString(cv,android.provider.Settings.System.TIME_12_24);
+                    if(strTimeFormat.equals("12"))
+                    {
+                        hour+=12;
+                    }
 
                     int n_time = n_hour*60+n_minute;
                     int time = hour*60+minute;

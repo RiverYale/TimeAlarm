@@ -15,11 +15,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
-import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.util.Log;
@@ -108,7 +108,8 @@ public class MySettings extends AppCompatActivity{
                 if (data.getBoolean("isOnAlarm", false)) {
                     Toast.makeText(MySettings.this, "请先关闭提醒", Toast.LENGTH_SHORT).show();
                 } else {
-
+                    Intent intent = new Intent(MySettings.this,SongList.class);
+                    startActivityForResult(intent,1);
                 }
                 break;
             case R.id.widget_sleepTime:
@@ -158,7 +159,7 @@ public class MySettings extends AppCompatActivity{
                 }
             }).create().show();
         } else if (TYPE == 3) {
-            final String[] arrayOfString = {"震动", "响铃(假装能响铃)", "弹窗"};
+            final String[] arrayOfString = {"震动", "响铃", "弹窗"};
             builder.setTitle(getString(R.string.type)).setIcon(R.drawable.clock);
             builder.setSingleChoiceItems(arrayOfString, data.getInt("type",0), new DialogInterface.OnClickListener()    {
                 public void onClick(DialogInterface dialogInterface, int i){
@@ -210,7 +211,7 @@ public class MySettings extends AppCompatActivity{
                 type = "震动";
                 break;
             case 1:
-                type = "响铃(假装能响铃)";
+                type = "响铃";
                 break;
             case 2:
                 type = "弹窗";
@@ -226,7 +227,7 @@ public class MySettings extends AppCompatActivity{
                             data.getLong("stopTime", 5L)+" min",
                             data.getString("sleepTime","23:00"),
                             type,
-                            data.getString("ring","Null")};
+                            data.getString("songName","随机")};
 
         TextView tvs[] = {findViewById(R.id.widget_lastTime),
                          findViewById(R.id.widget_stopTime),
@@ -274,12 +275,21 @@ public class MySettings extends AppCompatActivity{
         SpannableStringBuilder sb = new SpannableStringBuilder();
         sb.append(key);
         for (int i = 0; i < spaceCount; i++) sb.append(" ");
-        sb.append(v);
-        return sb;
-    }
+            sb.append(v);
+            return sb;
+        }
 
-    protected void onDestroy() {
-        super.onDestroy();
-        unbindService(connection);
+        protected void onDestroy() {
+            super.onDestroy();
+            unbindService(connection);
+        }
+
+        @Override
+        protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent _data) {
+            if(resultCode==1)
+            {
+            TextView tv = findViewById(R.id.widget_ring);
+            tv.setText(getContentItemString(tv, "铃声",data.getString("songName","随机")));
+        }
     }
 }

@@ -7,6 +7,10 @@ import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.media.MediaPlayer;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
@@ -30,6 +34,13 @@ public class MonitorService extends Service {
     private String[] items;
 
     Vibrator vibrator;
+    String url;
+    //自定义文件播放器
+    MediaPlayer mMediaPlayer;
+    Boolean noSongFile;
+    //系统文件播放
+    RingtoneManager manager;
+    int  ringToneCount;
 
     public IBinder onBind(Intent intent) {
         return new MyMsg();
@@ -42,6 +53,42 @@ public class MonitorService extends Service {
 
         type = data.getInt("type", 0);
         vibrator = (Vibrator)getSystemService(VIBRATOR_SERVICE);
+
+        url = data.getString("songFileUrl",null);
+        mMediaPlayer = new MediaPlayer();
+
+        manager = new RingtoneManager(MonitorService.this);
+        Cursor cursor = manager.getCursor();
+        ringToneCount = cursor.getCount();
+        int position = (int) (Math.random() * ringToneCount);
+        Uri uri = manager.getRingtoneUri(position);
+
+        if(url!=null)
+        {
+            try {
+                mMediaPlayer.setDataSource(url);
+                mMediaPlayer.prepare() ;
+                noSongFile = false;
+                Log.i("song","设置音乐路径成功");
+            }catch (Exception e)
+            {
+                e.printStackTrace();
+                Log.i("song","设置出错");
+            }
+        }
+        else
+        {
+            try {
+                noSongFile = true;
+                mMediaPlayer.setDataSource(MonitorService.this,uri);
+                Log.i("song","没有找到歌曲路径");
+                mMediaPlayer.prepare();
+                mMediaPlayer.setLooping(true);
+            }catch(Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
     }
 
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -57,6 +104,10 @@ public class MonitorService extends Service {
         super.onDestroy();
         isMonitor = false;
         vibrator.cancel();
+        if(mMediaPlayer.isPlaying())
+            mMediaPlayer.stop();
+        mMediaPlayer.release();
+
     }
 
     /**
@@ -130,6 +181,7 @@ public class MonitorService extends Service {
                         curStopTime += current - last;
                         if (curStopTime >= data.getLong("stopTime", 5L) * 60000) {
                             curLastTime = 0;
+                            mMediaPlayer.reset();
                         }
                     }
                     if(curLastTime >= data.getLong("lastTime",30L) * 60000 && needCount){
@@ -181,6 +233,10 @@ public class MonitorService extends Service {
                     break;
                 case 1:
                     //TODO
+                        if(!mMediaPlayer.isPlaying()) {
+                            mMediaPlayer.start();
+                        }
+
                     break;
                 case 2:
                     Intent intent = new Intent(getApplicationContext(), AlarmActivity.class);
@@ -197,11 +253,15 @@ public class MonitorService extends Service {
                     break;
                 case 1:
                     //TODO
+                        if(mMediaPlayer.isPlaying())
+                            mMediaPlayer.pause();
+
                     break;
                 case 2:
                     //无操作
                     break;
             }
         }
+
     }
 }
