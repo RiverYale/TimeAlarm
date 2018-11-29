@@ -24,7 +24,6 @@ import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -211,7 +210,7 @@ public class MySettings extends AppCompatActivity{
                     editor.putString("sleepTime",i+":0"+i1);
                     tv.setText(getContentItemString(tv, "睡觉时间", i+":0"+i1));
                 }
-                Log.i("setTime","设置时间为: "+i+":"+i1);
+//                Log.i("setTime","设置时间为: "+i+":"+i1);
                 editor.apply();
             }
         },hour,minute,true).show();

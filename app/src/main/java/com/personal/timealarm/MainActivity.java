@@ -11,11 +11,9 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.os.Vibrator;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CompoundButton;
@@ -96,11 +94,11 @@ public class MainActivity extends AppCompatActivity {
                     }
                     editor.putBoolean("isOnSleepAlarm",true);
                     startService(sleepMonitorService);
-                    Log.i("start","开启睡觉提醒");
+//                    Log.i("start","开启睡觉提醒");
                 } else {
                     editor.putBoolean("isOnSleepAlarm",false);
                     stopService(sleepMonitorService);
-                    Log.i("stop","关闭睡觉提醒");
+//                    Log.i("stop","关闭睡觉提醒");
                 }
                 editor.apply();
             }

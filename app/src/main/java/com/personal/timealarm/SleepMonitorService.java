@@ -1,7 +1,6 @@
 package com.personal.timealarm;
 
 import android.app.KeyguardManager;
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -14,7 +13,6 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 import java.util.Calendar;
 
 public class SleepMonitorService extends Service {
@@ -116,7 +114,6 @@ public class SleepMonitorService extends Service {
                     builder.setCategory(NotificationCompat.CATEGORY_MESSAGE);
                     builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
                 }
-                Log.d("zc", "showNotification: ");
                 notificationManager.notify(100, builder.build());
             }
         }

@@ -3,7 +3,6 @@ package com.personal.timealarm;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -33,7 +32,7 @@ public class SongList extends AppCompatActivity {
         random.put("singer","系统");
         random.put("length","任意");
         random.put("songFileUrl",null);
-        Log.i("song","load success");
+//        Log.i("song","load success");
         songList.add(0,random);
 
         listView = findViewById(R.id.widget_programlist);
@@ -52,14 +51,14 @@ public class SongList extends AppCompatActivity {
                 {
                     editor.putString("songName", songList.get(i).get("name"));
                     editor.putString("songFileUrl", songList.get(i).get("songFileUrl"));
-                    Log.i("song", "data get " + songList.get(i).get("name") + " with URL: " + songList.get(i).get("songFileUrl"));
+//                    Log.i("song", "data get " + songList.get(i).get("name") + " with URL: " + songList.get(i).get("songFileUrl"));
                     editor.apply();
                 }
                 else
                 {
                     editor.putString("songName",null);
                     editor.putString("songFileUrl", null);
-                    Log.i("song", "data get " + songList.get(i).get("name") + " with URL: " + songList.get(i).get("songFileUrl"));
+//                    Log.i("song", "data get " + songList.get(i).get("name") + " with URL: " + songList.get(i).get("songFileUrl"));
                     editor.apply();
                 }
                 setResult(1);
