@@ -1,5 +1,6 @@
 package com.personal.timealarm;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.AlertDialog;
@@ -10,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -105,6 +107,11 @@ public class MySettings extends AppCompatActivity{
                 getAndSetData(3);
                 break;
             case R.id.widget_ring:
+                int hasPermission = checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
+                if (hasPermission != PackageManager.PERMISSION_GRANTED) {
+                    requestPermissions(new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, 11);
+                    return;
+                }
                 if (data.getBoolean("isOnAlarm", false)) {
                     Toast.makeText(MySettings.this, "请先关闭提醒", Toast.LENGTH_SHORT).show();
                 } else {
@@ -127,9 +134,9 @@ public class MySettings extends AppCompatActivity{
         if (TYPE == 1 || TYPE == 2) {
             final View VIEW_EDIT = View.inflate(this, R.layout.activity_edit, null);
             if(TYPE == 1){
-                builder.setTitle("设置"+getString(R.string.lastTime)).setIcon(R.drawable.clock);
+                builder.setTitle("设置"+getString(R.string.lastTime)).setIcon(R.drawable.new_clock);
             }else{
-                builder.setTitle("设置"+getString(R.string.stopTime)).setIcon(R.drawable.clock);
+                builder.setTitle("设置"+getString(R.string.stopTime)).setIcon(R.drawable.new_clock);
             }
             builder.setView(VIEW_EDIT);
             builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
@@ -159,10 +166,21 @@ public class MySettings extends AppCompatActivity{
                 }
             }).create().show();
         } else if (TYPE == 3) {
+            if (data.getBoolean("isOnSleepAlarm", false)) {
+                Toast.makeText(MySettings.this, "请先关闭提醒", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            int hasPermission = checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
+            if (hasPermission != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, 11);
+                return;
+            }
             final String[] arrayOfString = {"震动", "响铃", "弹窗"};
-            builder.setTitle(getString(R.string.type)).setIcon(R.drawable.clock);
+            builder.setTitle(getString(R.string.type)).setIcon(R.drawable.new_clock);
             builder.setSingleChoiceItems(arrayOfString, data.getInt("type",0), new DialogInterface.OnClickListener()    {
                 public void onClick(DialogInterface dialogInterface, int i){
+                    if(i == 2)
+                        Toast.makeText(MySettings.this, "弹窗可适用于睡觉提醒", Toast.LENGTH_SHORT).show();
                     editor.putInt("type", i);
                     editor.apply();
                     TextView tv = findViewById(R.id.widget_type);

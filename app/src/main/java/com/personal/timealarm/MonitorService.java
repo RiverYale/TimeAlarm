@@ -28,7 +28,6 @@ public class MonitorService extends Service {
     private long curLastTime = 0;
     private long curStopTime = 0;
     private int type;
-    private boolean isMonitorStart = false;
     private String lastApp = "";
 
     private String[] items;
@@ -241,6 +240,7 @@ public class MonitorService extends Service {
                 case 2:
                     Intent intent = new Intent(getApplicationContext(), AlarmActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra("content", getString(R.string.alarmTip));
                     getApplication().startActivity(intent);
                     break;
             }

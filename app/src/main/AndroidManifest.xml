@@ -34,7 +34,8 @@
 
         <activity android:name=".AlarmActivity"/>
 
-        <activity android:name=".SongList"/>
+        <activity android:name=".SongList"
+                  android:parentActivityName=".MySettings"/>
 
         <service android:name=".MonitorService">
         </service>
