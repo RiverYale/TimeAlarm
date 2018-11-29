@@ -123,7 +123,7 @@ public class MySettings extends AppCompatActivity{
                 break;
             case R.id.widget_how_to_use:
                 Intent intent = new Intent(MySettings.this,HowToUse.class);
-                startActivity(intent);
+                startActivityForResult(intent,1);
         }
     }
 

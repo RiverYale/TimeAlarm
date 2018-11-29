@@ -96,7 +96,7 @@ public class SleepMonitorService extends Service {
             NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
             NotificationCompat.Builder builder = new NotificationCompat.Builder(SleepMonitorService.this, "default")
                     .setContentTitle("睡觉时间到啦")
-                    .setSmallIcon(R.drawable.new_clock)
+                    .setSmallIcon(R.drawable.small_icon)
                     .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.new_clock))
                     .setContentText("到点后十分钟内每隔一分钟就检查你一次~")
                     .setAutoCancel(true);
