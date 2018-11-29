@@ -178,8 +178,6 @@ public class MySettings extends AppCompatActivity{
             builder.setTitle(getString(R.string.type)).setIcon(R.drawable.new_clock);
             builder.setSingleChoiceItems(arrayOfString, data.getInt("type",0), new DialogInterface.OnClickListener()    {
                 public void onClick(DialogInterface dialogInterface, int i){
-                    if(i == 2)
-                        Toast.makeText(MySettings.this, "弹窗可适用于睡觉提醒", Toast.LENGTH_SHORT).show();
                     editor.putInt("type", i);
                     editor.apply();
                     TextView tv = findViewById(R.id.widget_type);

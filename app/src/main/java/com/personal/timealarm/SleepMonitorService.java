@@ -8,6 +8,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
+import android.media.MediaPlayer;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.PowerManager;
@@ -101,20 +104,33 @@ public class SleepMonitorService extends Service {
             builder.setContentIntent(pIntent);
             notificationManager.notify(100, builder.build());
 
-            if(data.getInt("type", 0) == 2) {
-                Intent intent = new Intent(getApplicationContext(), AlarmActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.putExtra("content", "睡觉时间到了哦~");
-                getApplication().startActivity(intent);
-            }else{
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    builder.setFullScreenIntent(pIntent, true);
-                    builder.setCategory(NotificationCompat.CATEGORY_MESSAGE);
-                    builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
-                }
-                long[] patter = {0, 500, 500, 500};
-                vibrator.vibrate(patter, -1);
-                notificationManager.notify(100, builder.build());
+            switch(data.getInt("type", 0)){
+                case 0:
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        builder.setFullScreenIntent(pIntent, true);
+                        builder.setCategory(NotificationCompat.CATEGORY_MESSAGE);
+                        builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+                    }
+                    long[] patter = {0, 500, 500, 500};
+                    vibrator.vibrate(patter, -1);
+                    notificationManager.notify(100, builder.build());
+                    break;
+                case 1:
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        builder.setFullScreenIntent(pIntent, true);
+                        builder.setCategory(NotificationCompat.CATEGORY_MESSAGE);
+                        builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+                    }
+                    Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                    MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), uri);
+                    mediaPlayer.start();
+                    break;
+                case 2:
+                    Intent intent = new Intent(getApplicationContext(), AlarmActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra("content", "睡觉时间到了哦~");
+                    getApplication().startActivity(intent);
+                    break;
             }
         }
     }
