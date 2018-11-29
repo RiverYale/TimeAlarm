@@ -91,14 +91,12 @@ public class SleepMonitorService extends Service {
 
         private void showNotification(){
             NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-            long[] vibrate = new long[]{0, 500, 500, 500};
             NotificationCompat.Builder builder = new NotificationCompat.Builder(SleepMonitorService.this, "default")
                     .setContentTitle("睡觉时间到啦")
                     .setSmallIcon(R.drawable.new_clock)
                     .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.new_clock))
                     .setContentText("到点后十分钟内每隔一分钟就检查你一次~")
-                    .setAutoCancel(true)
-                    .setVibrate(vibrate);
+                    .setAutoCancel(true);
             PendingIntent pIntent = PendingIntent.getActivity(SleepMonitorService.this, 100, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT);
             builder.setContentIntent(pIntent);
             notificationManager.notify(100, builder.build());
@@ -114,6 +112,8 @@ public class SleepMonitorService extends Service {
                     builder.setCategory(NotificationCompat.CATEGORY_MESSAGE);
                     builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
                 }
+                long[] patter = {0, 500, 500, 500};
+                vibrator.vibrate(patter, -1);
                 notificationManager.notify(100, builder.build());
             }
         }
