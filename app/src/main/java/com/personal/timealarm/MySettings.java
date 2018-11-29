@@ -115,6 +115,9 @@ public class MySettings extends AppCompatActivity{
             case R.id.widget_sleepTime:
                 getSleepTime();
                 break;
+            case R.id.widget_how_to_use:
+                Intent intent = new Intent(MySettings.this,HowToUse.class);
+                startActivity(intent);
         }
     }
 
@@ -223,8 +226,8 @@ public class MySettings extends AppCompatActivity{
                          getString(R.string.type),
                          getString(R.string.ring)};
 
-        String values[] = { data.getLong("lastTime", 30L)+" min",
-                            data.getLong("stopTime", 5L)+" min",
+        String values[] = { data.getLong("lastTime", 40L)+" min",
+                            data.getLong("stopTime", 60L)+" min",
                             data.getString("sleepTime","23:00"),
                             type,
                             data.getString("songName","随机")};

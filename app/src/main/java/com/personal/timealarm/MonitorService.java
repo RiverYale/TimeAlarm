@@ -179,12 +179,12 @@ public class MonitorService extends Service {
                         curStopTime = 0;
                     }else if(curLastTime > 0){
                         curStopTime += current - last;
-                        if (curStopTime >= data.getLong("stopTime", 5L) * 60000) {
+                        if (curStopTime >= data.getLong("stopTime", 60L) * 60000) {
                             curLastTime = 0;
                             mMediaPlayer.reset();
                         }
                     }
-                    if(curLastTime >= data.getLong("lastTime",30L) * 60000 && needCount){
+                    if(curLastTime >= data.getLong("lastTime",40L) * 60000 && needCount){
                         if(!isOnAlarm){
                             startAlarm();
                             isOnAlarm = true;

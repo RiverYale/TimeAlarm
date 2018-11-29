@@ -128,6 +128,14 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+        if(data.getBoolean("first_open",true)){
+            Log.i("showHowToUse","进入说明页面");
+            editor.putBoolean("first_open",false);
+            editor.apply();
+            Intent intent = new Intent(MainActivity.this,HowToUse.class);
+            startActivity(intent);
+        }
+
     }
 
 

@@ -94,6 +94,23 @@
         android:textColor="#000000"
         android:textSize="18sp" />
 
+    <TextView
+        android:id="@+id/widget_how_to_use"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:paddingStart="17dp"
+        android:paddingEnd="10dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:onClick="onClick"
+        android:gravity="center_vertical"
+        android:text="@string/how_to_use"
+        android:textColor="#000000"
+        android:textSize="18sp" />
+
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">

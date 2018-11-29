@@ -6,7 +6,7 @@
     <string name="lastTime">玩耍时间</string>
     <string name="stopTime">学习时间</string>
     <string name="type">提醒方式</string>
-    <string name="ring">铃声</string>
+    <string name="ring">设置铃声</string>
     <string name="curLastTime">已玩耍时间</string>
     <string name="curStopTime">已学习时间</string>
     <string name="hint">请输入时间(分钟)</string>
@@ -14,6 +14,17 @@
     <string name="openSleepAlarm">开启睡觉提醒</string>
     <string name="sleepTime">睡觉时间</string>
     <string name="alarmTip">玩耍时间已经到了哦~\n(点击回到桌面)</string>
+    <string name="how_to_use">使用说明</string>
+    <string name="howToUse">
+        欢迎使用时间提醒！这里有一份使用说明给你。\n
+        使用说明\n
+            1.监控使用功能：添加一些你要监控的app（长按删除），设置好玩耍时间和学习时间。之后就可以开始监控。当你到达你设定的玩耍时间时就（震动/响铃/弹窗）提醒你该停下来啦。当你没有在使用这些app的时候，就算你在学习啦。学习够了我们就会重置你的玩耍计时，你就可以继续愉快地玩耍啦。\n
+            2.睡觉提醒功能：你可以设定一个睡觉时间，如果你在这个时间段内使用手机，我就会提醒你睡觉\n
+        其他：\n
+            1.使用统计：会有你的近一周app使用情况哦（某些程序由于未知原因时间显示明显有误）\n
+            2.设置铃声：你可以选择一个自己的音乐来当作你的铃声。如果你没有设置一，我会随机选择一个系统铃声来提醒你哦\n
+            3.我会为了维护你的时间不惜冒着被卸载的风险，只要是你要求，我就会一直提醒你直到你停下来。无论什么时候都要对自己负责呀\n
+            4.制作团队：福禄寿</string>
 
 
 </resources>
