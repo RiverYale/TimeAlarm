@@ -1,5 +1,6 @@
 package com.personal.timealarm;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.AppOpsManager;
 import android.app.Service;
@@ -10,11 +11,9 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.os.Vibrator;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CompoundButton;
@@ -88,22 +87,18 @@ public class MainActivity extends AppCompatActivity {
         view_onSleepAlarm.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(b)
-                {
-                    String sleeptime = data.getString("sleepTime",null);
-                    if(sleeptime==null)
-                    {
+                if(b) {
+                    String sleepTime = data.getString("sleepTime",null);
+                    if(sleepTime==null) {
                         Toast.makeText(MainActivity.this, "还没有设置过睡觉时间，默认为23:00", Toast.LENGTH_SHORT).show();
                     }
                     editor.putBoolean("isOnSleepAlarm",true);
                     startService(sleepMonitorService);
-                    Log.i("start","开启睡觉提醒");
-                }
-                else
-                {
+//                    Log.i("start","开启睡觉提醒");
+                } else {
                     editor.putBoolean("isOnSleepAlarm",false);
                     stopService(sleepMonitorService);
-                    Log.i("stop","关闭睡觉提醒");
+//                    Log.i("stop","关闭睡觉提醒");
                 }
                 editor.apply();
             }
@@ -137,7 +132,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-
 
     protected void onResume() {
         super.onResume();

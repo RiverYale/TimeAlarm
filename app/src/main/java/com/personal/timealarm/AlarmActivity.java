@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 
 public class AlarmActivity extends AppCompatActivity{
 
@@ -19,9 +18,10 @@ public class AlarmActivity extends AppCompatActivity{
     @Override
     protected void onResume() {
         super.onResume();
+        String content = (String) getIntent().getExtras().get("content");
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.app_name)).setIcon(R.drawable.clock);
-        builder.setMessage(getString(R.string.alarmTip));
+        builder.setTitle(getString(R.string.app_name)).setIcon(R.drawable.new_clock);
+        builder.setMessage(content);
         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
@@ -40,8 +40,4 @@ public class AlarmActivity extends AppCompatActivity{
         super.onStop();
         finish();
     }
-
-//    public void onClick(View view) {
-//        finish();
-//    }
 }

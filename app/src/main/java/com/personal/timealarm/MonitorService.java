@@ -16,7 +16,6 @@ import android.os.Build;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.Vibrator;
-import android.util.Log;
 
 import java.util.List;
 
@@ -28,7 +27,6 @@ public class MonitorService extends Service {
     private long curLastTime = 0;
     private long curStopTime = 0;
     private int type;
-    private boolean isMonitorStart = false;
     private String lastApp = "";
 
     private String[] items;
@@ -69,11 +67,11 @@ public class MonitorService extends Service {
                 mMediaPlayer.setDataSource(url);
                 mMediaPlayer.prepare() ;
                 noSongFile = false;
-                Log.i("song","设置音乐路径成功");
+//                Log.i("song","设置音乐路径成功");
             }catch (Exception e)
             {
                 e.printStackTrace();
-                Log.i("song","设置出错");
+//                Log.i("song","设置出错");
             }
         }
         else
@@ -81,7 +79,7 @@ public class MonitorService extends Service {
             try {
                 noSongFile = true;
                 mMediaPlayer.setDataSource(MonitorService.this,uri);
-                Log.i("song","没有找到歌曲路径");
+//                Log.i("song","没有找到歌曲路径");
                 mMediaPlayer.prepare();
                 mMediaPlayer.setLooping(true);
             }catch(Exception e)
@@ -196,7 +194,7 @@ public class MonitorService extends Service {
                     last = current;
 
                     Thread.sleep(500);
-                    Log.d("zc", lastApp+" "+curLastTime+" "+curStopTime+" "+getId());
+//                    Log.d("zc", lastApp+" "+curLastTime+" "+curStopTime+" "+getId());
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -241,6 +239,7 @@ public class MonitorService extends Service {
                 case 2:
                     Intent intent = new Intent(getApplicationContext(), AlarmActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra("content", getString(R.string.alarmTip));
                     getApplication().startActivity(intent);
                     break;
             }
