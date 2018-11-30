@@ -5,8 +5,13 @@
     <uses-permission
         android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions" />
+    <!--手机使用情况权限-->
     <uses-permission android:name="android.permission.VIBRATE"/>
+    <!--震动权限-->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <!--获取外部存储权限-->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <!--横幅通知权限-->
 
     <application
         android:allowBackup="true"
